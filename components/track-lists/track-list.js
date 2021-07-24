@@ -8,15 +8,22 @@ import LoadingIcon from '../radio-player/icons/loading-icon';
 import Image from 'next/image';
 import TrackLinks from './track-links';
 import { getAlias, getCreator } from '../../utilities/general';
+import FilterButtons from '../radio-player/buttons/filter-buttons';
+import { useRouter } from 'next/router';
+import getAllTracks from '../../api/get-all-tracks';
 
 const TrackList = ({
     tracks,
+    setTracks,
     isTrackPlaying,
     creatorMetadata,
     playlist,
 }) => {
     const {controls, playerState} = useRadio();
     const handleSelectTrack = controls.selectTrack(tracks);
+    const tags= ['jazz', 'rock', 'glitch','noise','ambient','saxophone','chill','beats','guitar','drums','soundscape','piano','peaceful','live','hardcore','funk','bass','dark','brazil','poetry','rap','hiphop','electro'];
+
+    const page = useRouter().pathname;
 
     const renderPlayPauseButton = (id, i) => {
         if(playerState.isLoading) return (
@@ -38,9 +45,17 @@ const TrackList = ({
             );
     };
 
+    const filterTracks = async(tag) => {
+        const allTracks = await getAllTracks();
+        const filteredTracks = allTracks.filter(track => track.tags?.some((tags) => { return tags.tag.tag === tag})) 
+        setTracks(filteredTracks);
+    }
+
     return <>
         {!tracks.length ? <p>No audio tracks available</p> : (
             <div>
+                {page === "/" && <FilterButtons tags={tags} filter={filterTracks} />}
+                <hr/>
                 {tracks.map((t, i) =>
                     <div key={t.id} className={styles.trackRow}>
                         {renderPlayPauseButton(t.id, i)}

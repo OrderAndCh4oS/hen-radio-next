@@ -21,6 +21,9 @@ const query = gql`
             mime
             creator_id
             artifact_uri
+            token_tags {
+                tag{tag}
+              }
         }
     }
 `;
@@ -34,6 +37,7 @@ const getAllTracks = async() => {
         src: `${ipfsUrls[~~(Math.random() * ipfsUrls.length)]}/${o.artifact_uri.slice(7)}`,
         mimeType: o.mime,
         displayUri: o.display_uri,
+        tags: o.token_tags,
     })) || [];
 };
 

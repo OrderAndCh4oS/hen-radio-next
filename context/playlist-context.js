@@ -1,17 +1,17 @@
 import {createContext, useEffect, useState} from 'react';
 import getUserMetadataByWalletId from '../api/get-user-metadata-by-wallet-id';
-import {gql} from 'graphql-request';
 
 export const PlaylistContext = createContext({});
 
 const PlaylistProvider = ({children}) => {
-    const [tracks, setTracks] = useState([]);
+    const [filteredTracks, setFilteredTracks] = useState([]);
     const [creatorMetadata, setCreatorMetadata] = useState({});
 
     useEffect(() => {
-        if(!tracks) return;
+        console.log(filteredTracks)
+        if(!filteredTracks) return;
         (async() => {
-            const uniqueCreatorWalletIds = new Set(tracks.map(t => t.creator));
+            const uniqueCreatorWalletIds = new Set(filteredTracks.map(t => t.creator));
             const nextCreatorMetadata = (await Promise.allSettled(
                 [...uniqueCreatorWalletIds]
                     .map(id => getUserMetadataByWalletId(id))
@@ -30,13 +30,13 @@ const PlaylistProvider = ({children}) => {
             setCreatorMetadata(nextCreatorMetadata);
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [tracks]);
+    }, [filteredTracks]);
 
     return (
         <PlaylistContext.Provider
             value={{
-                tracks,
-                setTracks,
+                filteredTracks,
+                setFilteredTracks,
                 creatorMetadata
             }}
         >
