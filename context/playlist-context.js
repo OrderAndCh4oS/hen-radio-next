@@ -1,7 +1,7 @@
-import {createContext, useEffect, useState} from 'react';
+import { createContext, useEffect, useState } from 'react';
 import getUserMetadataByWalletId from '../api/get-user-metadata-by-wallet-id';
 
-export const PlaylistContext = createContext({});
+export const PlaylistContext = createContext();
 
 const PlaylistProvider = ({children}) => {
     const [filteredTracks, setFilteredTracks] = useState([]);
@@ -14,7 +14,7 @@ const PlaylistProvider = ({children}) => {
             const uniqueCreatorWalletIds = new Set(filteredTracks.map(t => t.creator));
             const nextCreatorMetadata = (await Promise.allSettled(
                 [...uniqueCreatorWalletIds]
-                    .map(id => getUserMetadataByWalletId(id))
+                    .map(id => getUserMetadataByWalletId(id)),
             ))
                 .filter(res => res.status === 'fulfilled')
                 .reduce((obj, res) => {
@@ -26,7 +26,6 @@ const PlaylistProvider = ({children}) => {
                     }
                     return obj;
                 }, {});
-            console.log('ncm', nextCreatorMetadata);
             setCreatorMetadata(nextCreatorMetadata);
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -13,6 +13,7 @@ const query = gql`
             id
             display_uri
             title
+            description
             token_holders {
                 holder_id
                 quantity
@@ -29,8 +30,8 @@ const query = gql`
 `;
 
 const getAllTracks = async() => {
-    const data = await request('https://api.hicdex.com/v1/graphql', query);
-    return data?.hic_et_nunc_token?.map(o => ({
+    const response = await request('https://api.hicdex.com/v1/graphql', query);
+    return response?.hic_et_nunc_token?.map(o => ({
         id: o.id,
         creator: o.creator_id,
         name: o.title,
@@ -38,6 +39,7 @@ const getAllTracks = async() => {
         mimeType: o.mime,
         displayUri: o.display_uri,
         tags: o.token_tags,
+        description: o.description
     })) || [];
 };
 

@@ -1,18 +1,32 @@
-import PlaylistView from '../components/views/playlist-view';
+import WalletView from '../../components/views/wallet-view';
 import Head from 'next/head';
+import getWalletsWithAudio from '../../api/get-wallets-with-audio';
+import getObjktsCreatedBy from '../../api/get-objkts-created-by';
+import WalletTrackList from '../../components/track-lists/wallet-track-list';
+import getObjktsOwnedBy from '../../api/get-objkts-owned-by';
 
-const PlaylistsPage = () => {
+export const getServerSideProps = async({params}) => {
+    const {walletAddress} = params;
+    const wallets = await getWalletsWithAudio();
+    const tracksCreated = await getObjktsCreatedBy(walletAddress);
+    const tracksOwned = await getObjktsOwnedBy(walletAddress);
+    const tracks = [...tracksCreated, ...tracksOwned];
+    const creator = walletAddress;
+    return {props: {creator, tracks, wallets}};
+};
+
+const Tz = ({creator, tracks, wallets}) => {
     const title = 'Listen to Hen Radio';
-    const description = 'Hic et Nunc NFT audio player and playlists';
+    const description = 'Hic et Nunc audio NFT audio player and playlists';
     const image = 'https://hen.radio/images/hen-radio-logo-social.png';
-    const url = 'https://hen.radio/playlists';
+    const url = 'https://hen.radio/tz';
 
     return <>
         <Head>
             <meta charSet="utf-8"/>
-            <title>Playlists | Hen Radio | NFT Music Player</title>
+            <title>Wallets | Hen Radio</title>
             <meta name="description" content={description}/>
-            <link rel="canonical" href={`http://hen.radio/playlists`}/>
+            <link rel="canonical" href={`http://hen.radio/tz`}/>
             <meta name="twitter:card" content="summary"/>
             <meta name="twitter:site" content="@hen_radio"/>
             <meta name="twitter:creator" content="@hen_radio"/>
@@ -39,10 +53,9 @@ const PlaylistsPage = () => {
             <meta httpEquiv="x-ua-compatible" content="ie=edge"/>
             <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
         </Head>
-        <PlaylistView/>
+        <WalletTrackList tracks={tracks} walletAddress={creator} objkt={null}/>
+        <WalletView wallets={wallets}/>
     </>;
 };
 
-export default PlaylistsPage;
-
-
+export default Tz;

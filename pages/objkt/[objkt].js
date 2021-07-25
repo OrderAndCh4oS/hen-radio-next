@@ -1,25 +1,27 @@
-import AllTracksView from '../../components/views/all-tracks-view';
-import getAllTracks from '../../api/get-all-tracks';
-import Head from 'next/head';
-import Metadata from '../../components/head/metadata';
 import getUserMetadataByWalletId from '../../api/get-user-metadata-by-wallet-id';
+import Head from 'next/head';
+import ObjktView from '../../components/views/objkt-view';
+import getWalletsWithAudio from '../../api/get-wallets-with-audio';
+import getObjktById from '../../api/get-objkt-by-id';
+import getObjktsCreatedBy from '../../api/get-objkts-created-by';
 
 export const getServerSideProps = async({params}) => {
     const {objkt} = params;
-    const tracks = await getAllTracks();
+    const wallets = await getWalletsWithAudio();
+    const track = await getObjktById(objkt);
+    let tracks = [];
+    if(track) tracks = await getObjktsCreatedBy(track.creator_id);
     const currentTrack = tracks.find(t => t.id === Number(objkt)) || null;
-    let creator = null;
+    let creator = track.creator_id;
     if(currentTrack) {
-        const response = await getUserMetadataByWalletId(currentTrack.creator);
+        const response = await getUserMetadataByWalletId(creator);
         if(response.status === 200) creator = await response.data;
     }
 
-    console.log('tttt', tracks[0])
-
-    return {props: {objkt, tracks, currentTrack, creator}};
+    return {props: {wallets, objkt, tracks, currentTrack, creator, walletAddress: track.creator_id}};
 };
 
-const PlayObjktPage = ({objkt, tracks, currentTrack, creator}) => {
+const PlayObjktPage = ({objkt, tracks, currentTrack, creator, walletAddress}) => {
     const byName = creator?.twitter
         ? ` by @${creator.twitter}`
         : creator?.alias
@@ -28,21 +30,46 @@ const PlayObjktPage = ({objkt, tracks, currentTrack, creator}) => {
     const title = currentTrack
         ? `Listen to ${currentTrack.name}${byName} on Hen Radio`
         : 'Not found';
-    const description = currentTrack
+    const description = currentTrack?.description
         ? `${currentTrack.description}`
         : 'An audio objkt with this id could not be found.';
-    const image = currentTrack ? `${currentTrack.img}` : '';
+    const image = 'https://hen.radio/images/hen-radio-logo-social.png';
     const url = `https://hen.radio/objkt/${objkt}`;
 
     return (
         <>
             <Head>
                 <meta charSet="utf-8"/>
-                <title>{currentTrack ? currentTrack.name + byName : 'All'} | Hen Radio</title>
+                <title>{currentTrack.name + byName} | Hen Radio | NFT Music Player</title>
+                <meta name="description" content={description}/>
                 <link rel="canonical" href={`http://hen.radio/${objkt}`}/>
-                <Metadata title={title} description={description} image={image} url={url}/>
+                <meta name="twitter:card" content="summary"/>
+                <meta name="twitter:site" content="@hen_radio"/>
+                <meta name="twitter:creator" content="@hen_radio"/>
+                <meta name="twitter:title" content={title}/>
+                <meta
+                    name="twitter:description"
+                    content={description}
+                />
+                <meta
+                    name="twitter:image"
+                    content={image}
+                />
+                <meta property="og:title" content={title}/>
+                <meta property="og:url" content={url}/>
+                <meta property="og:type" content="gallery"/>
+                <meta
+                    property="og:description"
+                    content={description}
+                />
+                <meta
+                    property="og:image"
+                    content={image}
+                />
+                <meta httpEquiv="x-ua-compatible" content="ie=edge"/>
+                <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
             </Head>
-            <AllTracksView tracks={tracks} objkt={objkt}/>
+            <ObjktView walletAddress={walletAddress} creator={creator} tracks={tracks} objkt={objkt}/>
         </>
     );
 };

@@ -1,17 +1,17 @@
 import '../styles/globals.css';
 import Providers from '../components/layout/providers';
-import styles from '../components/layout/styles.module.css';
-import RadioPlayer from '../components/radio-player/radio-player';
-import Layout from '../components/layout/layout';
+import Head from 'next/head';
 
 const MyApp = ({Component, pageProps}) =>
-    <Providers>
-        <Layout>
-            <div className={styles.radioPlayerBar} suppressHydrationWarning={true}>
-                <RadioPlayer/>
-            </div>
+    <>
+        <Head>
+            <title>Hen Radio | NFT Music Player</title>
+            <link rel="icon" href="/favicon.png" />
+        </Head>
+        <Providers>
             <Component {...pageProps} />
-        </Layout>
-    </Providers>;
+        </Providers>
+    </>
+;
 
 export default MyApp;
