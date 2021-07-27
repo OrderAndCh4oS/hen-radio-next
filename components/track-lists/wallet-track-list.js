@@ -12,7 +12,7 @@ const WalletTrackList = ({walletAddress, tracks, objkt}) => {
         controls,
         isTrackPlaying,
     } = useRadio();
-    const {setFilteredTracks} = usePlaylist();
+
     const [walletFilteredTracks, setWalletFilteredTracks] = useState([]);
     const [filter, setFilter] = useState(FilterTypes.ALL);
 

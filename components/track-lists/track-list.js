@@ -1,22 +1,21 @@
 import styles from './styles.module.css';
-import PauseIcon from '../radio-player/icons/pause-icon';
-import PlayIcon from '../radio-player/icons/play-icon';
+import PauseIcon from '../icons/pause-icon';
+import PlayIcon from '../icons/play-icon';
 import AddToPlaylist from '../add-to-playlist/add-to-playlist';
 import RemoveFromPlaylist from '../add-to-playlist/remove-from-playlist';
 import useRadio from '../../hooks/use-radio';
-import LoadingIcon from '../radio-player/icons/loading-icon';
+import LoadingIcon from '../icons/loading-icon';
 import Image from 'next/image';
 import TrackLinks from './track-links';
-import { getAlias, getCreator } from '../../utilities/general';
 import FilterButtons from '../radio-player/buttons/filter-buttons';
 import { useRouter } from 'next/router';
 import getAllTracks from '../../api/get-all-tracks';
+import { getIpfsUrl } from '../../utilities/general';
 
 const TrackList = ({
     tracks,
     setTracks,
     isTrackPlaying,
-    creatorMetadata,
     playlist,
 }) => {
     const {controls, playerState} = useRadio();
@@ -70,15 +69,17 @@ const TrackList = ({
                         }
                         <TrackLinks
                             track={t}
-                            creator={getCreator(t.creator)}
-                            alias={getAlias(t.creator, creatorMetadata)}
+                            walletAddress={t.creator.walletAddress}
+                            name={t.creator.name}
                         />
                         <div className={styles.trackRow_avatar}>
                             <Image
                                 width={26}
                                 height={26}
                                 alt={'Artist\'s avatar'}
-                                src={`https://services.tzkt.io/v1/avatars2/${t.creator}`}
+                                src={t.displayUri
+                                    ? getIpfsUrl(t.displayUri)
+                                    : '/images/playlist-default.png'}
                             />
                         </div>
                     </div>,

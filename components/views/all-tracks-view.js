@@ -12,7 +12,8 @@ const AllTracksView = ({objkt, tracks}) => {
         isTrackPlaying,
     } = useRadio();
 
-    const {filteredTracks, setFilteredTracks, creatorMetadata} = usePlaylist();
+    const {filteredTracks, setFilteredTracks } = usePlaylist();
+
     if(audio) {
         audio.onended = () => {
             if(!filteredTracks.length) return;
@@ -40,7 +41,6 @@ const AllTracksView = ({objkt, tracks}) => {
             tracks={filteredTracks}
             setTracks={setFilteredTracks}
             isTrackPlaying={isTrackPlaying}
-            creatorMetadata={creatorMetadata}
         />
     );
 };
