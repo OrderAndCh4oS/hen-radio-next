@@ -70,7 +70,6 @@ const RadioProvider = ({children}) => {
     };
 
     const handleInitialiseTrack = (tracks) => i => async() => {
-        console.log(tracks);
         if(tracks.length === 0) return
         setPlayerState(prevState => ({...prevState, isLoading: true}));
         cancelAnimationFrame(rAF);

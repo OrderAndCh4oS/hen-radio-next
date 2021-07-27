@@ -11,7 +11,6 @@ import PrevButton from './buttons/prev-button';
 import NextButton from './buttons/next-button';
 import ScrubberBar from './scrubber-bar';
 import Image from 'next/image';
-import LinkIcon from './icons/link-icon';
 import LinkButton from './buttons/link-button';
 
 const RadioPlayer = () => {

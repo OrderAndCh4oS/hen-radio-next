@@ -8,7 +8,6 @@ const PlaylistProvider = ({children}) => {
     const [creatorMetadata, setCreatorMetadata] = useState({});
 
     useEffect(() => {
-        console.log(filteredTracks)
         if(!filteredTracks) return;
         (async() => {
             const uniqueCreatorWalletIds = new Set(filteredTracks.map(t => t.creator));
@@ -36,7 +35,7 @@ const PlaylistProvider = ({children}) => {
             value={{
                 filteredTracks,
                 setFilteredTracks,
-                creatorMetadata
+                creatorMetadata,
             }}
         >
             {children}

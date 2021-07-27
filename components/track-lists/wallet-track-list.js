@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import TrackList from './track-list';
 import FilterTypes from '../../enums/filter-types';
-import TracksFilterBar from './tracks-filter-bar';
+import WalletFilterBar from './wallet-filter-bar';
 import useRadio from '../../hooks/use-radio';
 import usePlaylist from '../../hooks/use-playlist';
-import { audio, ipfsUrls } from '../../constants';
-import useWallet from '../../hooks/use-wallet';
+import { audio } from '../../constants';
 
 const WalletTrackList = ({walletAddress, tracks, objkt}) => {
     const {
@@ -13,20 +12,20 @@ const WalletTrackList = ({walletAddress, tracks, objkt}) => {
         controls,
         isTrackPlaying,
     } = useRadio();
-    const {setTracks, creatorMetadata} = usePlaylist();
-    const [filteredTracks, setFilteredTracks] = useState([]);
+    const {setFilteredTracks} = usePlaylist();
+    const [walletFilteredTracks, setWalletFilteredTracks] = useState([]);
     const [filter, setFilter] = useState(FilterTypes.ALL);
 
     if(audio) {
         audio.onended = () => {
-            if(!filteredTracks.length) return;
-            const nextTrackKey = (playerState.currentTrackKey + 1) % filteredTracks.length;
-            controls.initialiseTrack(walletFilterTracks)(nextTrackKey)();
+            if(!walletFilteredTracks.length) return;
+            const nextTrackKey = (playerState.currentTrackKey + 1) % walletFilteredTracks.length;
+            controls.initialiseTrack(walletFilteredTracks)(nextTrackKey)();
         };
     }
 
     useEffect(() => {
-        setTracks(tracks);
+        setWalletFilteredTracks(tracks);
         if(playerState.currentTrack === null) {
             const foundIndex = tracks.findIndex(t => t.id === Number(objkt));
             controls.initialiseTrack(tracks)(foundIndex !== -1 ? foundIndex : 0)();
@@ -35,8 +34,8 @@ const WalletTrackList = ({walletAddress, tracks, objkt}) => {
     }, [tracks]);
 
     useEffect(() => {
-        if(!filteredTracks) return;
-        setWalletFilterTracks(filteredTracks.filter(t => {
+        if(!tracks) return;
+        setWalletFilteredTracks(tracks.filter(t => {
             switch(filter) {
                 case FilterTypes.ALL:
                     return true;
@@ -49,17 +48,16 @@ const WalletTrackList = ({walletAddress, tracks, objkt}) => {
             }
         }));
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filteredTracks, filter]);
+    }, [tracks, filter]);
 
-    if(!filteredTracks) return <p>Loading...</p>;
+    if(!tracks) return <p>Loading...</p>;
 
     return (
         <>
-            <TracksFilterBar filter={filter} setFilter={setFilter}/>
+            <WalletFilterBar filter={filter} setFilter={setFilter}/>
             <TrackList
-                tracks={walletFilterTracks}
+                tracks={walletFilteredTracks}
                 isTrackPlaying={isTrackPlaying}
-                creatorMetadata={creatorMetadata}
             />
         </>
     );

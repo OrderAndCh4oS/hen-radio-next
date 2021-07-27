@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import TrackList from '../track-lists/track-list';
 import useRadio from '../../hooks/use-radio';
-import useTracksMetadata from '../../hooks/use-metadata';
 import { audio } from '../../constants';
 
 const PlaylistTracks = ({playlist}) => {
@@ -11,32 +10,29 @@ const PlaylistTracks = ({playlist}) => {
         isTrackPlaying,
     } = useRadio();
 
-    const {filteredTracks} = playlist;
-    const creatorMetadata = useTracksMetadata(filteredTracks);
-
+    const {tracks} = playlist;
 
     if(audio) {
         audio.onended = () => {
-            if(!filteredTracks.length) return;
+            if(!tracks.length) return;
             const nextTrackKey = (playerState.currentTrackKey + 1) % tracks.length;
-            controls.selectTrack(filteredTracks)(nextTrackKey)();
+            controls.selectTrack(tracks)(nextTrackKey)();
         };
     }
 
     useEffect(() => {
-        if(!filteredTracks?.length || !audio) return;
+        if(!tracks?.length || !audio) return;
         if(audio.src) return;
-        controls.initialiseTrack(filteredTracks)(0)();
+        controls.initialiseTrack(tracks)(0)();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filteredTracks]);
+    }, [tracks]);
 
-    if(!filteredTracks) return <p>Loading...</p>;
+    if(!tracks) return <p>Loading...</p>;
 
     return (
         <TrackList
-            tracks={filteredTracks}
+            tracks={tracks}
             isTrackPlaying={isTrackPlaying}
-            creatorMetadata={creatorMetadata}
             playlist={playlist}
         />
     );

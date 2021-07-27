@@ -1,7 +1,7 @@
 import styles from './styles.module.css';
 import FilterTypes from '../../enums/filter-types';
 
-const TracksFilterBar = ({filter, setFilter}) =>
+const WalletFilterBar = ({filter, setFilter}) =>
     <div className={styles.filterTabs}>
         <button
             className={`${styles.filterButton} ${filter === FilterTypes.ALL
@@ -27,4 +27,4 @@ const TracksFilterBar = ({filter, setFilter}) =>
     </div>
 ;
 
-export default TracksFilterBar;
+export default WalletFilterBar;

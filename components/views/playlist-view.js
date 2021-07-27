@@ -16,6 +16,7 @@ const PlaylistView = () => {
     }, [userPlaylists]);
 
     useEffect(() => {
+        console.log(playlists)
         setSelectedPlaylist(prevState => {
             const sp = playlists.find(np => prevState.name === np.name) || playlists[0];
             return {...sp, forceUpdate: (sp?.forceUpdate || 0) + 1}; // Todo: Remove the need for forceUpdate

@@ -4,7 +4,6 @@ import Head from 'next/head';
 
 export const getServerSideProps = async() => {
     const tracks = await getAllTracks();
-
     return {props: {tracks}};
 };
 

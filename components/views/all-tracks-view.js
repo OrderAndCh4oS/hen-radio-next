@@ -20,15 +20,18 @@ const AllTracksView = ({objkt, tracks}) => {
             controls.selectTrack(filteredTracks)(nextTrackKey)();
         };
     }
+    useEffect(() => {    
+        setFilteredTracks(tracks);   
+        // eslint-disable-next-line react-hooks/exhaustive-deps   
+    }, [])
 
     useEffect(() => {
-        setFilteredTracks(tracks);
         if(playerState.currentTrack === null) {
             const foundIndex = filteredTracks.findIndex(t => t.id === Number(objkt));
             controls.initialiseTrack(filteredTracks)(foundIndex !== -1 ? foundIndex : 0)();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [tracks]);
+    }, [filteredTracks]);
 
     if(!filteredTracks) return <p>Loading...</p>;
 

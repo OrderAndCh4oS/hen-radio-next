@@ -54,8 +54,9 @@ const TrackList = ({
     return <>
         {!tracks.length ? <p>No audio tracks available</p> : (
             <div>
-                {page === "/" && <FilterButtons tags={tags} filter={filterTracks} />}
-                <hr/>
+                {page === "/" && <FilterButtons tags={tags} filter={filterTracks} /> }
+                {page === "/" && <hr className={styles.divider}/>}
+
                 {tracks.map((t, i) =>
                     <div key={t.id} className={styles.trackRow}>
                         {renderPlayPauseButton(t.id, i)}
